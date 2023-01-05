@@ -74,7 +74,7 @@ class Tutorial1App extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Tutorial1'),
         ),
-        body: Column(children: [
+        body: ListView(children: [
           Image.asset(
             'images/lake.jpg',
             width: 600,
