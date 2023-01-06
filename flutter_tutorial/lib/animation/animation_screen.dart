@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// アニメーションと、アニメーション対象をまとめて定義したWidget（AnimatedWidgetを使う）
 class AnimatedLogo extends AnimatedWidget {
   const AnimatedLogo({super.key, required Animation<double> animation})
       : super(listenable: animation);
@@ -13,6 +14,46 @@ class AnimatedLogo extends AnimatedWidget {
         height: animation.value,
         width: animation.value,
         child: const FlutterLogo(),
+      ),
+    );
+  }
+}
+
+// アニメーションさせるもの（Flutterロゴ）を定義したWidget
+// コードの責務を分けることで再利用しやすくしたりメンテナンス性が良くなる?
+class LogoWidget extends StatelessWidget {
+  const LogoWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: const FlutterLogo(),
+    );
+  }
+}
+
+// アニメーションを定義したWidget
+class GrowTransition extends StatelessWidget {
+  const GrowTransition(
+      {required this.child, required this.animation, super.key});
+
+  final Widget child;
+  final Animation<double> animation;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: AnimatedBuilder(
+        animation: animation,
+        builder: (context, child) {
+          return SizedBox(
+            height: animation.value,
+            width: animation.value,
+            child: child,
+          );
+        },
+        child: child,
       ),
     );
   }
@@ -48,7 +89,10 @@ class _AnimationScreenState extends State<AnimationScreen>
   }
 
   @override
-  Widget build(BuildContext context) => AnimatedLogo(animation: animation);
+  // Widget build(BuildContext context) => AnimatedLogo(animation: animation);
+  Widget build(BuildContext context) {
+    return GrowTransition(animation: animation, child: const LogoWidget());
+  }
 
   @override
   void dispose() {
