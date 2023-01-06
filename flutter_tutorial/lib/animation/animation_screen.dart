@@ -35,7 +35,8 @@ class _AnimationScreenState extends State<AnimationScreen>
     super.initState();
     controller =
         AnimationController(duration: const Duration(seconds: 2), vsync: this);
-    animation = Tween<double>(begin: 0, end: 300).animate(controller);
+    animation = Tween<double>(begin: 0, end: 300).animate(controller)
+      ..addStatusListener((status) => print('$status'));
     controller.forward();
   }
 
