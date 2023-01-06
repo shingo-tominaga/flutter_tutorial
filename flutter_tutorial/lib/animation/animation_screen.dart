@@ -97,6 +97,9 @@ class _AnimationScreenState extends State<AnimationScreen>
 
   @override
   Widget build(BuildContext context) => AnimatedLogo(animation: animation);
+  // ↑ AnimatedWidgetを使う時の
+
+  // ↓ AnimatedBuilderを使った責務の分離verを使う時の
   // Widget build(BuildContext context) {
   //   return GrowTransition(animation: animation, child: const LogoWidget());
   // }
