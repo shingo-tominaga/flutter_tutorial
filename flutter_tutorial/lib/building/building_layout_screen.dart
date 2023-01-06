@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Tutorial1App extends StatelessWidget {
-  const Tutorial1App({super.key});
+class BuildingLayoutScreen extends StatelessWidget {
+  const BuildingLayoutScreen({super.key});
 
   // This widget is the root of your application.
   @override
