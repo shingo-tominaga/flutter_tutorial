@@ -5,10 +5,12 @@ class YoutubeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      appBar: AppBarWidget(),
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
-    );
+    return MaterialApp(
+        theme: ThemeData.dark(),
+        home: Scaffold(
+          appBar: const AppBarWidget(),
+          body: ListView(children: [FeedWidget()]),
+        ));
   }
 }
 
@@ -30,7 +32,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         _actionButton(() {}, const Icon(Icons.search)),
         _googleAccountButton(),
         const SizedBox(
-          width: 4,
+          width: 8,
         )
       ],
     );
@@ -38,7 +40,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   IconButton _youtubeButton() {
     return IconButton(
-        padding: const EdgeInsets.only(left: 4),
+        padding: const EdgeInsets.only(left: 8),
         icon: Image.asset(
           'images/youtube_social_icon_red.png',
           height: 22,
@@ -65,4 +67,64 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       child: const Text('S'),
     );
   }
+}
+
+class FeedWidget extends StatelessWidget {
+  FeedWidget({super.key});
+
+  final feedContents = [
+    FeedContent(
+        '急上昇', Icons.trending_up, const Color.fromARGB(255, 113, 12, 41)),
+    FeedContent(
+        '音楽', Icons.music_note, const Color.fromARGB(255, 43, 137, 116)),
+    FeedContent('ゲーム', Icons.gamepad, const Color.fromARGB(255, 147, 91, 89)),
+    FeedContent('ニュース', Icons.article, const Color.fromARGB(255, 15, 56, 109)),
+    FeedContent('学び', Icons.lightbulb, const Color.fromARGB(255, 23, 105, 62)),
+    FeedContent('ライブ', Icons.sensors, const Color.fromARGB(255, 217, 87, 41)),
+    FeedContent(
+        'スポーツ', Icons.emoji_events, const Color.fromARGB(255, 18, 99, 127)),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 3.5,
+        padding:
+            const EdgeInsets.only(left: 12, top: 16, right: 12, bottom: 16),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        children: feedContents
+            .map((content) => Container(
+                  decoration: BoxDecoration(
+                      color: content.color,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Icon(content.iconData),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        content.title,
+                        style: const TextStyle(fontSize: 16),
+                      )
+                    ],
+                  ),
+                ))
+            .toList());
+  }
+}
+
+class FeedContent {
+  FeedContent(this.title, this.iconData, this.color);
+
+  final String title;
+  final IconData iconData;
+  final Color color;
 }
