@@ -3,15 +3,124 @@ import 'package:flutter_tutorial/youtube/youtube_app_colors.dart';
 import 'package:flutter_tutorial/youtube/youtube_feed_widget.dart';
 import 'package:flutter_tutorial/youtube/youtube_movies_widget.dart';
 
-class YoutubeScreen extends StatelessWidget {
+class YoutubeScreen extends StatefulWidget {
   const YoutubeScreen({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _YoutubeScreenState();
+}
+
+class _YoutubeScreenState extends State<YoutubeScreen> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      if (index == 2) {
+        _showBottomSheet();
+      } else {
+        _selectedIndex = index;
+      }
+    });
+  }
+
+  void _showBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            height: 400,
+            padding: const EdgeInsets.all(16),
+            decoration: const BoxDecoration(
+                color: YoutubeAppColors.rgb322933,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                )),
+            child: const Text(
+              'showModalBottomSheet()を呼び出した',
+              style: TextStyle(color: Colors.white),
+            ),
+          );
+        });
+  }
+
+  BottomNavigationBarItem _bottomNavigationBarItem(
+      String label, IconData iconData, IconData activeIconData,
+      {double? iconSize = 28}) {
+    return BottomNavigationBarItem(
+        backgroundColor: YoutubeAppColors.rgb322933,
+        icon: Icon(iconData, size: iconSize),
+        activeIcon: Icon(activeIconData, size: iconSize),
+        label: label);
+  }
+
+  // BottomNavigationBarによる遷移確認用のWidget
+  final Widget _homeScreen =
+      ListView(children: [YoutubeFeedWidget(), YoutubeMoviesWidget()]);
+
+  final Widget _searchScreen = Container(
+    color: YoutubeAppColors.rgb221923,
+    alignment: Alignment.center,
+    child:
+        const Text('検索画面', style: TextStyle(color: Colors.white, fontSize: 32)),
+  );
+
+  final Widget _subscriptionChannelsScreen = Container(
+    color: YoutubeAppColors.rgb221923,
+    alignment: Alignment.center,
+    child: const Text('登録チャンネル画面',
+        style: TextStyle(color: Colors.white, fontSize: 32)),
+  );
+
+  final Widget _libraryScreen = Container(
+    color: YoutubeAppColors.rgb221923,
+    alignment: Alignment.center,
+    child: const Text('ライブラリ画面',
+        style: TextStyle(color: Colors.white, fontSize: 32)),
+  );
+
+  List<Widget> _screens = [];
+
+  @override
+  void initState() {
+    _screens = [
+      _homeScreen,
+      _searchScreen,
+      Container(), // 真ん中のタブには画面割り振りがないため、ダミーとして。
+      _subscriptionChannelsScreen,
+      _libraryScreen
+    ];
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
       appBar: const AppBarWidget(),
-      body: ListView(children: [YoutubeFeedWidget(), YoutubeMoviesWidget()]),
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: YoutubeAppColors.rgb322933,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        unselectedFontSize: 10,
+        selectedFontSize: 10,
+        type: BottomNavigationBarType.fixed,
+        unselectedItemColor: Colors.white,
+        selectedItemColor: Colors.white,
+        items: [
+          _bottomNavigationBarItem('ホーム', Icons.home_outlined, Icons.home),
+          _bottomNavigationBarItem('検索', Icons.explore_outlined, Icons.explore),
+          _bottomNavigationBarItem(
+              '', Icons.add_circle_outline, Icons.add_circle_outline,
+              iconSize: 40),
+          _bottomNavigationBarItem(
+              '登録チャンネル', Icons.subscriptions_outlined, Icons.subscriptions),
+          _bottomNavigationBarItem(
+              'ライブラリ', Icons.video_library_outlined, Icons.video_library)
+        ],
+      ),
     ));
   }
 }
