@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tutorial/building/building_layout_screen.dart';
 import 'package:flutter_tutorial/animation/animation_screen.dart';
+import 'package:flutter_tutorial/youtube/youtube_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,8 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Tutorial Home',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.blue, canvasColor: Colors.transparent),
       home: const MyHomePage(title: 'Flutter Tutorial Home'),
     );
   }
@@ -38,12 +38,14 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
             TransitionScreenButton('Turorial1', BuildingLayoutScreen()),
-            TransitionScreenButton('Turorial1.1', AnimationScreen())
+            TransitionScreenButton('Turorial1.1', AnimationScreen()),
+            TransitionScreenButton('Youtube', YoutubeScreen())
           ],
         ),
       ),
