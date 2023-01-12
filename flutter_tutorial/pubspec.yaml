@@ -63,6 +63,8 @@ flutter:
   assets:
     - images/lake.jpg
     - images/youtube_social_icon_red.png
+    - images/img_floor_plan.png
+    - images/img_no_image.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
