@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 
 // Youtubeチュートリアルでは別クラスに分けたけど、画面単位で持ってるパターンもアリかと思った
@@ -20,7 +21,11 @@ class _ResidenceScreenState extends State<ResidenceScreen> {
   int _selectedBottomTabIndex = 0;
   int _selectedChipIndex = 0;
 
-  TextButton _buildChipButton(int chipIndex, String label) {
+  // Map<index, バッチに表示する数値>
+  final Map<int, int> _chipBadgeStates = {0: 0, 1: 1};
+  final Map<int, int> _bottomTabBadgeStates = {0: 0, 1: 0, 2: 1, 3: 0};
+
+  TextButton _buildChipButton(int chipIndex, String label, int badgeContent) {
     Color? backgroundColor;
     Color? labelColor;
     FontWeight? fontWeight;
@@ -35,39 +40,68 @@ class _ResidenceScreenState extends State<ResidenceScreen> {
       fontWeight = null;
     }
 
-    void onChipTapped(int chipIndex) {
-      setState(() {
-        _selectedChipIndex = chipIndex;
-      });
-    }
-
     return TextButton(
-        onPressed: () => onChipTapped(chipIndex),
-        style: TextButton.styleFrom(
-            padding: const EdgeInsets.only(left: 0, right: 8)),
+      onPressed: () => onChipTapped(chipIndex),
+      style: TextButton.styleFrom(
+          padding: const EdgeInsets.only(left: 0, right: 8)),
+      child: Badge(
+        showBadge: (badgeContent > 0) ? true : false,
+        badgeContent: Text(
+          badgeContent.toString(),
+          style: const TextStyle(color: Colors.white, fontSize: 12),
+        ),
+        position: const BadgePosition(end: 0, top: 0),
         child: Chip(
           backgroundColor: backgroundColor,
           label: Text(label),
           labelStyle: TextStyle(color: labelColor, fontWeight: fontWeight),
-        ));
+        ),
+      ),
+    );
   }
 
-  BottomNavigationBarItem _buildBottomNavigationBarItem(
-      IconData iconData, IconData activeIconData, String label) {
+  // TODO バッチが消える時のアニメーション改善
+  //   処理的に badgeContentが0 -> バッチ表示を0にする -> 0なのでshowBadge==falseで消えるとなっていて騒がしい感じになる
+  BottomNavigationBarItem _buildBottomNavigationBarItem(IconData iconData,
+      IconData activeIconData, String label, int badgeContent) {
     return BottomNavigationBarItem(
-        icon: Icon(
-          iconData,
-          color: ColorAssets.rgb189_189_189,
+        icon: Badge(
+          showBadge: (badgeContent > 0) ? true : false,
+          badgeContent: Text(
+            badgeContent.toString(),
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+          position: const BadgePosition(end: -5, top: -5),
+          child: Icon(
+            iconData,
+            color: ColorAssets.rgb189_189_189,
+          ),
         ),
-        activeIcon: Icon(
-          activeIconData,
+        activeIcon: Badge(
+          showBadge: (badgeContent > 0) ? true : false,
+          badgeContent: Text(
+            badgeContent.toString(),
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+          position: const BadgePosition(end: -5, top: -5),
+          child: Icon(
+            activeIconData,
+          ),
         ),
         label: label);
+  }
+
+  void onChipTapped(int chipIndex) {
+    setState(() {
+      _selectedChipIndex = chipIndex;
+      _chipBadgeStates[chipIndex] = 0;
+    });
   }
 
   void _onTappedBottomTab(int index) {
     setState(() {
       _selectedBottomTabIndex = index;
+      _bottomTabBadgeStates[index] = 0;
     });
   }
 
@@ -80,15 +114,15 @@ class _ResidenceScreenState extends State<ResidenceScreen> {
           leading: null,
           title: Row(
             children: [
-              _buildChipButton(0, 'おすすめ'),
-              _buildChipButton(1, 'リフォーム'),
+              _buildChipButton(0, 'おすすめ', _chipBadgeStates[0]!),
+              _buildChipButton(1, 'リフォーム', _chipBadgeStates[1]!),
             ],
           ),
-          actions: const [
+          actions: [
             IconButton(
-                onPressed: null,
-                padding: EdgeInsets.only(right: 8),
-                icon: Icon(
+                onPressed: () {},
+                padding: const EdgeInsets.only(right: 8),
+                icon: const Icon(
                   Icons.add_circle,
                   color: ColorAssets.rgb75_159_144,
                   size: 40,
@@ -97,12 +131,15 @@ class _ResidenceScreenState extends State<ResidenceScreen> {
         ),
         body: Stack(
           children: [
-            ListView(
-              children: [
-                _SearchConditionCard(),
-                _RoomInformationCard(),
-                _RoomInformationCard()
-              ],
+            Container(
+              color: ColorAssets.rgb249_246_242,
+              child: ListView(
+                children: [
+                  _SearchConditionCard(),
+                  _RoomInformationCard(),
+                  _RoomInformationCard()
+                ],
+              ),
             ),
             Align(
               alignment: const Alignment(0.9, 0.9),
@@ -144,14 +181,14 @@ class _ResidenceScreenState extends State<ResidenceScreen> {
             selectedFontSize: 12,
             unselectedFontSize: 11,
             items: [
-              _buildBottomNavigationBarItem(
-                  Icons.home_outlined, Icons.home, 'ホーム'),
-              _buildBottomNavigationBarItem(
-                  Icons.favorite_outline, Icons.favorite, 'お気に入り'),
-              _buildBottomNavigationBarItem(
-                  Icons.chat_bubble_outline, Icons.chat_bubble, 'メッセージ'),
-              _buildBottomNavigationBarItem(
-                  Icons.person_outline, Icons.person, 'マイページ'),
+              _buildBottomNavigationBarItem(Icons.home_outlined, Icons.home,
+                  'ホーム', _bottomTabBadgeStates[0]!),
+              _buildBottomNavigationBarItem(Icons.favorite_outline,
+                  Icons.favorite, 'お気に入り', _bottomTabBadgeStates[1]!),
+              _buildBottomNavigationBarItem(Icons.chat_bubble_outline,
+                  Icons.chat_bubble, 'メッセージ', _bottomTabBadgeStates[2]!),
+              _buildBottomNavigationBarItem(Icons.person_outline, Icons.person,
+                  'マイページ', _bottomTabBadgeStates[3]!),
             ]),
       ),
     );
