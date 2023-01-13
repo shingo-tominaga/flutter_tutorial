@@ -17,50 +17,91 @@ class ResidenceScreen extends StatefulWidget {
 }
 
 class _ResidenceScreenState extends State<ResidenceScreen> {
+  int _selectedIndex = 0;
+
+  BottomNavigationBarItem _buildBottomNavigationBarItem(
+      IconData iconData, IconData activeIconData, String label) {
+    return BottomNavigationBarItem(
+        icon: Icon(
+          iconData,
+          color: ColorAssets.rgb189_189_189,
+        ),
+        activeIcon: Icon(
+          activeIconData,
+        ),
+        label: label);
+  }
+
+  void _onTappedBottomTab(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          appBar: const AppBarWidget(),
-          body: Stack(
-            children: [
-              ListView(
-                children: [
-                  _SearchConditionCard(),
-                  _RoomInformationCard(),
-                  _RoomInformationCard()
-                ],
-              ),
-              Align(
-                alignment: const Alignment(0.9, 0.9),
-                child: SizedBox(
-                  width: 72,
-                  height: 72,
-                  child: FloatingActionButton(
-                    onPressed: () {},
-                    backgroundColor: ColorAssets.rgb75_159_144,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.search,
-                          color: Colors.white,
-                          size: 32,
-                        ),
-                        Text(
-                          '物件',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
+        appBar: const AppBarWidget(),
+        body: Stack(
+          children: [
+            ListView(
+              children: [
+                _SearchConditionCard(),
+                _RoomInformationCard(),
+                _RoomInformationCard()
+              ],
+            ),
+            Align(
+              alignment: const Alignment(0.9, 0.9),
+              child: SizedBox(
+                width: 72,
+                height: 72,
+                child: FloatingActionButton(
+                  onPressed: () {},
+                  backgroundColor: ColorAssets.rgb75_159_144,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(
+                        Icons.search,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                      Text(
+                        '物件',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold),
+                      )
+                    ],
                   ),
                 ),
-              )
-            ],
-          )),
+              ),
+            )
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+            onTap: _onTappedBottomTab,
+            currentIndex: _selectedIndex,
+            type: BottomNavigationBarType.fixed,
+            iconSize: 36,
+            selectedItemColor: ColorAssets.rgb75_159_144,
+            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+            selectedFontSize: 12,
+            unselectedFontSize: 11,
+            items: [
+              _buildBottomNavigationBarItem(
+                  Icons.home_outlined, Icons.home, 'ホーム'),
+              _buildBottomNavigationBarItem(
+                  Icons.favorite_outline, Icons.favorite, 'お気に入り'),
+              _buildBottomNavigationBarItem(
+                  Icons.chat_bubble_outline, Icons.chat_bubble, 'メッセージ'),
+              _buildBottomNavigationBarItem(
+                  Icons.person_outline, Icons.person, 'マイページ'),
+            ]),
+      ),
     );
   }
 }
