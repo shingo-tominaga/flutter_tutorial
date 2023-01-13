@@ -17,7 +17,40 @@ class ResidenceScreen extends StatefulWidget {
 }
 
 class _ResidenceScreenState extends State<ResidenceScreen> {
-  int _selectedIndex = 0;
+  int _selectedBottomTabIndex = 0;
+  int _selectedChipIndex = 0;
+
+  TextButton _buildChipButton(int chipIndex, String label) {
+    Color? backgroundColor;
+    Color? labelColor;
+    FontWeight? fontWeight;
+
+    if (chipIndex == _selectedChipIndex) {
+      backgroundColor = ColorAssets.rgb229_235_234;
+      labelColor = ColorAssets.rgb75_159_144;
+      fontWeight = FontWeight.bold;
+    } else {
+      backgroundColor = null;
+      labelColor = null;
+      fontWeight = null;
+    }
+
+    void onChipTapped(int chipIndex) {
+      setState(() {
+        _selectedChipIndex = chipIndex;
+      });
+    }
+
+    return TextButton(
+        onPressed: () => onChipTapped(chipIndex),
+        style: TextButton.styleFrom(
+            padding: const EdgeInsets.only(left: 0, right: 8)),
+        child: Chip(
+          backgroundColor: backgroundColor,
+          label: Text(label),
+          labelStyle: TextStyle(color: labelColor, fontWeight: fontWeight),
+        ));
+  }
 
   BottomNavigationBarItem _buildBottomNavigationBarItem(
       IconData iconData, IconData activeIconData, String label) {
@@ -34,7 +67,7 @@ class _ResidenceScreenState extends State<ResidenceScreen> {
 
   void _onTappedBottomTab(int index) {
     setState(() {
-      _selectedIndex = index;
+      _selectedBottomTabIndex = index;
     });
   }
 
@@ -42,7 +75,26 @@ class _ResidenceScreenState extends State<ResidenceScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: const AppBarWidget(),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          leading: null,
+          title: Row(
+            children: [
+              _buildChipButton(0, 'おすすめ'),
+              _buildChipButton(1, 'リフォーム'),
+            ],
+          ),
+          actions: const [
+            IconButton(
+                onPressed: null,
+                padding: EdgeInsets.only(right: 8),
+                icon: Icon(
+                  Icons.add_circle,
+                  color: ColorAssets.rgb75_159_144,
+                  size: 40,
+                )),
+          ],
+        ),
         body: Stack(
           children: [
             ListView(
@@ -84,7 +136,7 @@ class _ResidenceScreenState extends State<ResidenceScreen> {
         ),
         bottomNavigationBar: BottomNavigationBar(
             onTap: _onTappedBottomTab,
-            currentIndex: _selectedIndex,
+            currentIndex: _selectedBottomTabIndex,
             type: BottomNavigationBarType.fixed,
             iconSize: 36,
             selectedItemColor: ColorAssets.rgb75_159_144,
@@ -102,76 +154,6 @@ class _ResidenceScreenState extends State<ResidenceScreen> {
                   Icons.person_outline, Icons.person, 'マイページ'),
             ]),
       ),
-    );
-  }
-}
-
-class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
-  const AppBarWidget({super.key});
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-
-  @override
-  State<StatefulWidget> createState() => _AppBarWidgetStaet();
-}
-
-class _AppBarWidgetStaet extends State<AppBarWidget> {
-  int _selectedChipIndex = 0;
-
-  TextButton _buildChipButton(int chipIndex, String label) {
-    Color? backgroundColor;
-    Color? labelColor;
-    FontWeight? fontWeight;
-
-    if (chipIndex == _selectedChipIndex) {
-      backgroundColor = ColorAssets.rgb229_235_234;
-      labelColor = ColorAssets.rgb75_159_144;
-      fontWeight = FontWeight.bold;
-    } else {
-      backgroundColor = null;
-      labelColor = null;
-      fontWeight = null;
-    }
-
-    void onChipTapped(int chipIndex) {
-      setState(() {
-        _selectedChipIndex = chipIndex;
-      });
-    }
-
-    return TextButton(
-        onPressed: () => onChipTapped(chipIndex),
-        style: TextButton.styleFrom(
-            padding: const EdgeInsets.only(left: 0, right: 8)),
-        child: Chip(
-          backgroundColor: backgroundColor,
-          label: Text(label),
-          labelStyle: TextStyle(color: labelColor, fontWeight: fontWeight),
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      leading: null,
-      title: Row(
-        children: [
-          _buildChipButton(0, 'おすすめ'),
-          _buildChipButton(1, 'リフォーム'),
-        ],
-      ),
-      actions: const [
-        IconButton(
-            onPressed: null,
-            padding: EdgeInsets.only(right: 8),
-            icon: Icon(
-              Icons.add_circle,
-              color: ColorAssets.rgb75_159_144,
-              size: 40,
-            )),
-      ],
     );
   }
 }
