@@ -21,15 +21,46 @@ class _ResidenceScreenState extends State<ResidenceScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: const AppBarWidget(),
-        body: ListView(
-          children: [
-            _SearchConditionCard(),
-            _RoomInformationCard(),
-            _RoomInformationCard()
-          ],
-        ),
-      ),
+          appBar: const AppBarWidget(),
+          body: Stack(
+            children: [
+              ListView(
+                children: [
+                  _SearchConditionCard(),
+                  _RoomInformationCard(),
+                  _RoomInformationCard()
+                ],
+              ),
+              Align(
+                alignment: const Alignment(0.9, 0.9),
+                child: SizedBox(
+                  width: 72,
+                  height: 72,
+                  child: FloatingActionButton(
+                    onPressed: () {},
+                    backgroundColor: ColorAssets.rgb75_159_144,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          Icons.search,
+                          color: Colors.white,
+                          size: 32,
+                        ),
+                        Text(
+                          '物件',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          )),
     );
   }
 }
